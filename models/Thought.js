@@ -1,4 +1,4 @@
-const { Schema } = require('mongoose');
+const { Schema, model } = require('mongoose');
 const reactionSchema = require('./Reaction')
 
 // creates schema for Thought model
@@ -39,5 +39,7 @@ thoughtSchema
     .get(function() {
         return this.reactions.length;
     });
+
+const Thought = model('thought', thoughtSchema);
 
 module.exports = Thought;

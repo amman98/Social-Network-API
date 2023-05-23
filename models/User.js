@@ -1,4 +1,4 @@
-const { Schema } = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 // creates schema for user model
 const userSchema = new Schema (
@@ -43,5 +43,7 @@ userSchema
     .get(function() {
         return this.friends.length;
     });
+
+const User = model('user', userSchema);
 
 module.exports = User;
