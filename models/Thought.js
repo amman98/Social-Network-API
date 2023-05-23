@@ -14,9 +14,9 @@ const thoughtSchema = new Schema (
             type: Date,
             default: Date.now,
             // getter function formats the date
-            get: function() {
+            get: function(amman) {
                 // Example format: 5:50:27 PM
-                return this.createdAt.toLocaleTimeString();
+                return amman.toLocaleTimeString();
             }, 
         },
         username: {
@@ -40,6 +40,6 @@ thoughtSchema
         return this.reactions.length;
     });
 
-const Thought = model('thought', thoughtSchema);
+const Thought = model('Thought', thoughtSchema);
 
 module.exports = Thought;

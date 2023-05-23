@@ -58,13 +58,6 @@ connection.once('open', async () => {
         reactions: [],
     }
 
-    // push thought data to users
-    userAmman.thoughts.push(thoughtOne);
-    userAmman.thoughts.push(thoughtTwo);
-
-    userJohn.thoughts.push(thoughtThree);
-    userJohn.thoughts.push(thoughtFour);
-
     // add user and thought objects to arrays
     users.push(userAmman);
     users.push(userJohn);
@@ -81,17 +74,25 @@ connection.once('open', async () => {
         getRandomArrItem(thoughts).reactions.push(reactions[i]);
     }
 
+    await Thought.collection.insertMany(thoughts);
+
+    // push thought data to users
+    userAmman.thoughts.push(thoughtOne._id);
+    userAmman.thoughts.push(thoughtTwo._id);
+
+    userJohn.thoughts.push(thoughtThree._id);
+    userJohn.thoughts.push(thoughtFour._id);
+    
     // Add users and thoughts to the collections and await the results
     await User.collection.insertOne(userAmman);
     await User.collection.insertOne({
         username: userJohn.username,
         email: userJohn.email,
-        thoughts: userJohn.thoughts,
+        thoughts: [thoughtThree._id, thoughtFour._id],
         friends: [userAmman._id],
     });
 
     //await User.collection.insertMany(users);
-    await Thought.collection.insertMany(thoughts);
 
     // Log out the seed data to indicate what should appear in the database
     console.table(users);

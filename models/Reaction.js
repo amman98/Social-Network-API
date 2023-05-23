@@ -19,9 +19,9 @@ const reactionSchema = new Schema (
             type: Date,
             default: Date.now,
             // getter function formats the date
-            get: function() {
+            get: function(amman) {
                 // Example format: 5:50:27 PM
-                return this.createdAt.toLocaleTimeString();
+                return amman.toLocaleTimeString();
             },
         },
     }

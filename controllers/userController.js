@@ -24,14 +24,19 @@ module.exports = {
 
     // Get user by id
     getSingleUser(req, res) {
-        User.findOne({_id: req.params.userId})
-            .select('`-__v')
-            .then(async (user) =>
-            !user
+        User.findById(req.params.userId)
+            //.populate({ path: 'thoughts', select: '-__v' })
+            // .select('`-__v')
+            .populate("friends")
+            .populate("thoughts")
+            .then((user) => {
+                console.log(user);
+            return !user
                 ? res.status(404).json({ message: 'No user with that ID' })
                 : res.json({
                     user
                 })
+            }
             )
           .catch((err) => {
             console.log(err);
