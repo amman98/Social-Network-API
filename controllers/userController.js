@@ -1,21 +1,10 @@
 const { User, Thought } = require('../models');
 
-const userCount = async () =>
-    User.aggregate()
-        .count('userCount')
-        .then((numberOfUsers) => numberOfUsers);
-
 module.exports = {
     // Get all users
     getUsers(req, res) {
         User.find()
-            .then(async (users) => {
-                const userObj = {
-                    users,
-                    headCount: await userCount(),
-                };
-                return res.json(userObj);
-            })
+            .then((users) => res.json(users))
           .catch((err) => {
             console.log(err);
             return res.status(500).json(err);
@@ -30,7 +19,6 @@ module.exports = {
             .populate("friends")
             .populate("thoughts")
             .then((user) => {
-                console.log(user);
             return !user
                 ? res.status(404).json({ message: 'No user with that ID' })
                 : res.json({
@@ -53,8 +41,8 @@ module.exports = {
 
     // Update a user by id
     updateUser(req, res) {
-        User.findOneAndUpdate({ _id: req.params.userId }, req.body, { new: true })
-            .then(async (user) =>
+        User.findByIdAndUpdate( req.params.userId , req.body, { new: true })
+            .then((user) =>
                 !user
                 ? res.status(404).json({ message: 'No user with that ID' })
                 : res.json({
@@ -73,10 +61,40 @@ module.exports = {
             .then((user) => 
                 !user
                 ? res.status(404).json({ message: 'No such user exists'})
+                : res.json({message: "User deleted!"})
+            )
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json(err);
+            });
+    },
+
+    // Add a friend to user's friend list
+    createFriend(req, res) {
+        User.findByIdAndUpdate(req.params.userId, { $push: {friends: req.params.friendId} }, { new: true })
+            .then((user) => {
+                !user
+                ? res.status(404).json({ message: 'No such user exists'})
                 : res.json({
                     user
                   })
-            )
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json(err);
+            });
+    },
+
+    // Delete a friend in user's friend list
+    deleteFriend(req, res) {
+        User.findByIdAndUpdate(req.params.userId, { $pull: {friends: req.params.friendId} }, { new: true })
+            .then((user) => {
+                !user
+                ? res.status(404).json({ message: 'No such user exists'})
+                : res.json({
+                    user
+                  })
+            })
             .catch((err) => {
                 console.log(err);
                 res.status(500).json(err);
