@@ -65,7 +65,7 @@ module.exports = {
             )
             .catch((err) => {
                 console.log(err);
-                res.status(500).json(err);
+                return res.status(500).json(err);
             });
     },
 
@@ -73,7 +73,7 @@ module.exports = {
     createFriend(req, res) {
         User.findByIdAndUpdate(req.params.userId, { $push: {friends: req.params.friendId} }, { new: true })
             .then((user) => {
-                !user
+                return !user
                 ? res.status(404).json({ message: 'No such user exists'})
                 : res.json({
                     user
@@ -81,7 +81,7 @@ module.exports = {
             })
             .catch((err) => {
                 console.log(err);
-                res.status(500).json(err);
+                return res.status(500).json(err);
             });
     },
 
@@ -89,7 +89,7 @@ module.exports = {
     deleteFriend(req, res) {
         User.findByIdAndUpdate(req.params.userId, { $pull: {friends: req.params.friendId} }, { new: true })
             .then((user) => {
-                !user
+                return !user
                 ? res.status(404).json({ message: 'No such user exists'})
                 : res.json({
                     user
@@ -97,7 +97,7 @@ module.exports = {
             })
             .catch((err) => {
                 console.log(err);
-                res.status(500).json(err);
+                return res.status(500).json(err);
             });
     },
 };
