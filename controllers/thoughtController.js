@@ -1,4 +1,4 @@
-const { User, Thought } = require('../models');
+const { User, Thought, Reaction } = require('../models');
 const mongoose = require('mongoose');
 
 module.exports = {
@@ -45,7 +45,47 @@ module.exports = {
     },
 
     // Update a thought by id
-    // updateThought(req, res) {
-    //     Thought.findByIdAnd
-    // }
+    updateThought(req, res) {
+        Thought.findByIdAndUpdate( req.params.thoughtId, req.body, { new: true })
+            .then((thought) =>
+                !thought
+                ? res.status(404).json({ message: 'No thought with that ID'})
+                : res.json({ 
+                    thought 
+                    })      
+            )
+            .catch((err) => {
+                console.log(err);
+                return res.status(500).json(err);
+            });
+    },
+
+    // Delete a thought by id
+    deleteThought(req, res) {
+        Thought.findByIdAndDelete(req.params.thoughtId)
+            .then((thought) =>
+                !thought
+                ? res.status(404).json({ message: 'No such thought exists'})
+                : res.json({message: "Thought deleted!"})    
+            )
+            .catch((err) => {
+                console.log(err);
+                return res.status(500).json(err);
+            });
+    },
+
+    createReaction(req, res) {
+        Thought.findByIdAndUpdate(req.params.thoughtId, { $push: {reactions: req.body } }, { new: true })
+            .then((thought) => 
+                !thought
+                ? res.status(404).json({ message: 'No such thought exists'})
+                : res.json({
+                    thought
+                })
+            )
+            .catch((err) => {
+                console.log(err);
+                return res.status(500).json(err);
+            });
+    }
 };
