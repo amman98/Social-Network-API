@@ -62,8 +62,14 @@ module.exports = {
 
     // Delete a thought by id
     deleteThought(req, res) {
+        let thought;
         Thought.findByIdAndDelete(req.params.thoughtId)
-            .then((thought) =>
+            // deletes thought from user thoughts array
+            .then((newThought) => {
+                thought = newThought;
+                return User.findOneAndUpdate({ username: newThought.username }, { $pull: {thoughts: req.params.thoughtId} });
+            })
+            .then(() =>
                 !thought
                 ? res.status(404).json({ message: 'No such thought exists'})
                 : res.json({message: "Thought deleted!"})    
