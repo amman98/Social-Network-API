@@ -80,6 +80,7 @@ module.exports = {
             });
     },
 
+    // Add a reaction to thought
     createReaction(req, res) {
         Thought.findByIdAndUpdate(req.params.thoughtId, { $push: {reactions: req.body } }, { new: true })
             .then((thought) => 
@@ -93,5 +94,21 @@ module.exports = {
                 console.log(err);
                 return res.status(500).json(err);
             });
-    }
+    },
+
+    // Delete a reaction from a thought
+    deleteReaction(req, res) {
+        Thought.findByIdAndUpdate(req.params.thoughtId, { $pull: {reactions: {reactionId: req.params.reactionId} } }, { new: true })
+            .then((thought) => 
+                !thought
+                ? res.status(404).json({ message: 'No such thought exists'})
+                : res.json({
+                    thought
+                })
+            )
+            .catch((err) => {
+                console.log(err);
+                return res.status(500).json(err);
+            });
+    },
 };

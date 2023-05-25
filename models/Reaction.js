@@ -24,6 +24,12 @@ const reactionSchema = new Schema (
                 return amman.toLocaleTimeString();
             },
         },
+    },
+    {
+        toJSON: {
+            getters: true,
+        },
+        id: false,
     }
 );
 
